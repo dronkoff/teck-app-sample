@@ -1,0 +1,28 @@
+name: "Workflow Param Test"
+
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        required: true
+        type: string
+      tag:
+        required: false
+        type: string
+
+jobs:
+  do-the-build:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.get-tag.outputs.tag }}
+    steps:
+      - name: Checkout app source
+        uses: actions/checkout@v4
+      - name: Get new way
+        id: get-tag-new
+        if: ${{ github.event.inputs.tag != '' }}
+        run: echo "tag=$(echo "${tag}" | tr '/' '-' | tr '[:upper:]' '[:lower:]')" | tee -a $GITHUB_OUTPUT $GITHUB_ENV > /dev/null      
+      - name: Get old way
+        id: get-tag-old
+        if: ${{ github.event.inputs.tag == '' }}
+        run: echo "tag=$(echo "${GITHUB_REF_NAME}" | tr '/' '-' | tr '[:upper:]' '[:lower:]')" | tee -a $GITHUB_OUTPUT $GITHUB_ENV > /dev/null      
