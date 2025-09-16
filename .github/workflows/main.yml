@@ -21,7 +21,7 @@ jobs:
       - name: Get new way
         id: get-tag-new
         if: ${{ inputs.tag != '' }}
-        run: echo "tag=$(echo "${inputs.tag}" | tr '/' '-' | tr '[:upper:]' '[:lower:]')" | tee -a $GITHUB_OUTPUT $GITHUB_ENV > /dev/null
+        run: echo "tag=$(echo "${{ inputs.tag }}" | tr '/' '-' | tr '[:upper:]' '[:lower:]')" | tee -a $GITHUB_OUTPUT $GITHUB_ENV > /dev/null
       - name: Get old way
         id: get-tag-old
         if: ${{ inputs.tag == '' }}
