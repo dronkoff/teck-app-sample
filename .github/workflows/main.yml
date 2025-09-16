@@ -21,8 +21,11 @@ jobs:
       - name: Get new way
         id: get-tag-new
         if: ${{ github.event.inputs.tag != '' }}
-        run: echo "tag=$(echo "${tag}" | tr '/' '-' | tr '[:upper:]' '[:lower:]')" | tee -a $GITHUB_OUTPUT $GITHUB_ENV > /dev/null      
+        run: echo "tag=$(echo "${tag}" | tr '/' '-' | tr '[:upper:]' '[:lower:]')" | tee -a $GITHUB_OUTPUT $GITHUB_ENV > /dev/null
       - name: Get old way
         id: get-tag-old
         if: ${{ github.event.inputs.tag == '' }}
-        run: echo "tag=$(echo "${GITHUB_REF_NAME}" | tr '/' '-' | tr '[:upper:]' '[:lower:]')" | tee -a $GITHUB_OUTPUT $GITHUB_ENV > /dev/null      
+        run: echo "tag=$(echo "${GITHUB_REF_NAME}" | tr '/' '-' | tr '[:upper:]' '[:lower:]')" | tee -a $GITHUB_OUTPUT $GITHUB_ENV > /dev/null
+      - name: Print the tag
+        run: echo ${{env.tag}}
+
