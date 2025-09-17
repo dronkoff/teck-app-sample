@@ -6,26 +6,39 @@ on:
       app:
         required: true
         type: string
-      tag:
+      environment:
+        description: 'Environment to deploy to'
         required: false
-        type: string
+        type: choice
+        options:
+          - 'main'
+          - 'emu'
+          - 'emu-uat'
+          - 'er'
 
 jobs:
   do-the-build:
     runs-on: ubuntu-latest
     outputs:
-      tag: ${{ steps.get-tag.outputs.tag }}
+      environment: ${{ steps.set-output.outputs.tag }}
     steps:
       - name: Checkout app source
         uses: actions/checkout@v4
-      - name: Get new way
-        id: get-tag-new
-        if: ${{ inputs.tag != '' }}
-        run: echo "tag=$(echo "${{ inputs.tag }}" | tr '/' '-' | tr '[:upper:]' '[:lower:]')" | tee -a $GITHUB_OUTPUT $GITHUB_ENV > /dev/null
-      - name: Get old way
-        id: get-tag-old
-        if: ${{ inputs.tag == '' }}
-        run: echo "tag=$(echo "${GITHUB_REF_NAME}" | tr '/' '-' | tr '[:upper:]' '[:lower:]')" | tee -a $GITHUB_OUTPUT $GITHUB_ENV > /dev/null
+      - name: Get tag from parameter
+        if: ${{ inputs.environment != '' }}
+        run: echo "tag=${{ inputs.environment }}" | tee -a $GITHUB_ENV
+      - name: Get tag from branch name
+        if: ${{ inputs.environment == '' }}
+        run: echo "tag=$(echo "${GITHUB_REF_NAME}" | tr '/' '-' | tr '[:upper:]' '[:lower:]')" | tee -a $GITHUB_ENV
+      - name: Set output
+        id: set-output
+        run: echo "tag=${{env.tag}}" | tee -a $GITHUB_OUTPUT
       - name: Print the tag
         run: echo ${{env.tag}}
 
+  do-the-deploy:
+    runs-on: ubuntu-latest
+    needs: [do-the-build]
+    steps:
+      - name: Deploy to the environment
+        run: echo "DEPLOYING TO ${{needs.do-the-build.outputs.environment}}"
