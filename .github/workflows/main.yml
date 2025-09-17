@@ -36,7 +36,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Get tag from parameter
         if: ${{ inputs.environment != '' }}
-        run: echo "tag=${{ inputs.environment }}@L" | tee -a $GITHUB_ENV
+        run: echo "tag=$(echo ${{ inputs.environment }} | tr '[:upper:]' '[:lower:]')" | tee -a $GITHUB_ENV
       - name: Get tag from branch name
         if: ${{ inputs.environment == '' }}
         run: echo "tag=$(echo "${GITHUB_REF_NAME}" | tr '/' '-' | tr '[:upper:]' '[:lower:]')" | tee -a $GITHUB_ENV
