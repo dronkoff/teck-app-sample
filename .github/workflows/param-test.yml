@@ -5,12 +5,12 @@ on:
 
 jobs:
   call-without-param:
-    uses: dronkoff/teck-app-sample/blob/main/.github/workflows/main.yml@main
+    uses: dronkoff/teck-app-sample/.github/workflows/main.yml@main
     with:
       app: FOO-BAR-APP
 
   call-with-param:
-    uses: dronkoff/teck-app-sample/blob/main/.github/workflows/main.yml@main
+    uses: dronkoff/teck-app-sample/.github/workflows/main.yml@main
     with:
       app: FOO-BAR-APP
       environment: emu-uat
