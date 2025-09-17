@@ -2,6 +2,15 @@ name: "Workflow Param Test"
 
 on:
   workflow_call:
+    inputs:
+      app:
+        required: true
+        type: string
+      environment:
+        description: 'Environment to deploy to'
+        required: false
+        type: string
+          
   workflow_dispatch:
     inputs:
       app:
@@ -27,7 +36,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Get tag from parameter
         if: ${{ inputs.environment != '' }}
-        run: echo "tag=${{ inputs.environment }}" | tee -a $GITHUB_ENV
+        run: echo "tag=${{ inputs.environment.lowercase }}" | tee -a $GITHUB_ENV
       - name: Get tag from branch name
         if: ${{ inputs.environment == '' }}
         run: echo "tag=$(echo "${GITHUB_REF_NAME}" | tr '/' '-' | tr '[:upper:]' '[:lower:]')" | tee -a $GITHUB_ENV
